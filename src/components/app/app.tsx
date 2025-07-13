@@ -14,6 +14,7 @@ import styles from './app.module.css';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from '../../services/store';
 import { getUserThunk } from '../../services/slices/userSlice/userThunks';
+import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 import { useEffect } from 'react';
 
 import { AppHeader, Modal, OrderInfo, IngredientDetails } from '@components';
@@ -24,6 +25,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getUserThunk());
+    dispatch(fetchIngredients());
   }, [dispatch]);
 
   const location = useLocation();
@@ -36,6 +38,15 @@ const App = () => {
       <Routes location={backgroundLocation || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
+        <Route path='/feed/:number' element={<OrderInfo />} />
+        <Route
+          path='/profile/orders/:number'
+          element={
+            <ProtectedRoute>
+              <OrderInfo />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path='/login'

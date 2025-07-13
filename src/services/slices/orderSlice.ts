@@ -7,6 +7,7 @@ type TOrderState = {
   currentOrder: TOrder | null;
   orderRequest: boolean;
   isLoadingUserOrders: boolean;
+  isLoadingOrderInfo: boolean;
   error: string | null;
 };
 
@@ -15,6 +16,7 @@ const initialState: TOrderState = {
   currentOrder: null,
   orderRequest: false,
   isLoadingUserOrders: false,
+  isLoadingOrderInfo: false,
   error: null
 };
 
@@ -73,6 +75,7 @@ const orderSlice = createSlice({
     currentOrder: (state) => state.currentOrder,
     orderRequest: (state) => state.orderRequest,
     isLoadingUserOrders: (state) => state.isLoadingUserOrders,
+    isLoadingOrderInfo: (state) => state.isLoadingOrderInfo,
     error: (state) => state.error
   },
   extraReducers(builder) {
@@ -104,10 +107,16 @@ const orderSlice = createSlice({
         state.error = action.payload as string;
       })
       // FETCH ORDER BY NUMBER
+      .addCase(fetchOrderByNumber.pending, (state) => {
+        state.isLoadingOrderInfo = true;
+        state.error = null;
+      })
       .addCase(fetchOrderByNumber.fulfilled, (state, action) => {
+        state.isLoadingOrderInfo = false;
         state.currentOrder = action.payload;
       })
       .addCase(fetchOrderByNumber.rejected, (state, action) => {
+        state.isLoadingOrderInfo = false;
         state.error = action.payload as string;
       });
   }
@@ -120,5 +129,6 @@ export const {
   currentOrder,
   orderRequest,
   isLoadingUserOrders,
+  isLoadingOrderInfo,
   error
 } = orderSlice.selectors;

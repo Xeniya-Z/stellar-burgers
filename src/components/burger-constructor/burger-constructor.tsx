@@ -31,6 +31,10 @@ export const BurgerConstructor: FC = () => {
     }
   }, [orderModalData, dispatch]);
 
+  useEffect(() => {
+    dispatch(clearCurrentOrder());
+  }, [dispatch]);
+
   const onOrderClick = () => {
     if (!isAuth) {
       navigate('/login');

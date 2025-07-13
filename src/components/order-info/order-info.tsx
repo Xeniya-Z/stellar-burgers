@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from '../../services/store';
 import {
   fetchOrderByNumber,
-  currentOrder
+  currentOrder,
+  isLoadingOrderInfo
 } from '../../services/slices/orderSlice';
 import { selectIngredients } from '../../services/slices/ingredientsSlice';
 import { Preloader } from '../ui/preloader';
@@ -22,11 +23,11 @@ export const OrderInfo: FC = () => {
 
   const orderData = useSelector(currentOrder);
   const ingredients = useSelector(selectIngredients);
+  const isLoading = useSelector(isLoadingOrderInfo);
 
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 
-    console.log('orderData.createdAt:', orderData.createdAt);
     const date = new Date(orderData.createdAt);
 
     type TIngredientsWithCount = {
@@ -65,7 +66,7 @@ export const OrderInfo: FC = () => {
     };
   }, [orderData, ingredients]);
 
-  if (!orderInfo) {
+  if (isLoading || !orderInfo) {
     return <Preloader />;
   }
 
