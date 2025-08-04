@@ -50,7 +50,7 @@ const sauce: TIngredient = {
 };
 
 describe('burgerConstructorReducer', () => {
-  describe('добавление ингридиентов: addIngredient', () => {
+  describe('добавление ингредиентов: addIngredient', () => {
     const initialState = {
       bun: null,
       ingredients: []
@@ -67,7 +67,7 @@ describe('burgerConstructorReducer', () => {
       });
     });
 
-    test('добавление основного ингридиента', () => {
+    test('добавление основного ингредиента', () => {
       const newState = burgerConstructorReducer(
         initialState,
         addIngredient(main)
@@ -88,25 +88,59 @@ describe('burgerConstructorReducer', () => {
     });
   });
 
-  test('удаление ингридиента: removeIngredient', () => {
-    const initialState = {
-      bun: bun,
-      ingredients: [
-        { ...main, id: 'main-id' },
-        { ...sauce, id: 'sauce-id' }
-      ]
-    };
+  describe('удаление ингредиента: removeIngredient', () => {
+    test('удаление ингредиента по id', () => {
+      const initialState = {
+        bun: bun,
+        ingredients: [
+          { ...main, id: 'main-id' },
+          { ...sauce, id: 'sauce-id' }
+        ]
+      };
 
-    const newState = burgerConstructorReducer(
-      initialState,
-      removeIngredient('main-id')
-    );
+      const newState = burgerConstructorReducer(
+        initialState,
+        removeIngredient('main-id')
+      );
 
-    expect(newState.ingredients).toHaveLength(1);
-    expect(newState.ingredients[0]).toEqual(expect.objectContaining(sauce));
+      expect(newState.ingredients).toHaveLength(1);
+      expect(newState.ingredients[0]).toEqual(expect.objectContaining(sauce));
+    });
+
+    test('удаление ингредиента из пустого конструктора: состояние не меняется', () => {
+      const initialState = {
+        bun: null,
+        ingredients: []
+      };
+
+      const newState = burgerConstructorReducer(
+        initialState,
+        removeIngredient('main-id')
+      );
+
+      expect(newState.bun).toBeNull();
+      expect(newState.ingredients).toEqual(initialState.ingredients);
+    });
+
+    test('удаление ингредиента по несуществующему id: состояние не меняется', () => {
+      const initialState = {
+        bun: bun,
+        ingredients: [
+          { ...main, id: 'main-id' },
+          { ...sauce, id: 'sauce-id' }
+        ]
+      };
+
+      const newState = burgerConstructorReducer(
+        initialState,
+        removeIngredient('invalid-id')
+      );
+
+      expect(newState.ingredients).toEqual(initialState.ingredients);
+    });
   });
 
-  describe('изменение порядка ингридиентов: moveIngredient', () => {
+  describe('изменение порядка ингредиентов: moveIngredient', () => {
     const initialState = {
       bun: bun,
       ingredients: [
@@ -139,6 +173,16 @@ describe('burgerConstructorReducer', () => {
       expect(newState.ingredients[0]).toEqual({ ...main, id: 'main-2' });
       expect(newState.ingredients[1]).toEqual({ ...main, id: 'main-1' });
       expect(newState.ingredients[2]).toEqual({ ...sauce, id: 'sauce-id' });
+      expect(newState.bun).toEqual(bun);
+    });
+
+    test('перемещение с индексами вне границ массива не изменяет порядок', () => {
+      const newState = burgerConstructorReducer(
+        initialState,
+        moveIngredient({ fromIndex: -1, toIndex: 10 })
+      );
+
+      expect(newState.ingredients).toEqual(initialState.ingredients);
       expect(newState.bun).toEqual(bun);
     });
   });

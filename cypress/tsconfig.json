@@ -9,6 +9,8 @@
   },
   "include": [
     "../node_modules/cypress",
-    "./**/*.tsx"
+    "./**/*.tsx",
+    "./**/*.ts",
+    "../src/utils/types.ts" 
   ]
 }

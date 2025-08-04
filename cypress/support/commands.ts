@@ -1,37 +1,49 @@
-/// <reference types="cypress" />
-// ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+import {
+  INGREDIENT_BUN,
+  INGREDIENT_MAIN,
+  INGREDIENT_SAUCE,
+  MODAL,
+  MODAL_CLOSE_BUTTON,
+  MODAL_OVERLAY
+} from './selectors';
+
+const ingredientsSelectors = {
+  bun: INGREDIENT_BUN,
+  main: INGREDIENT_MAIN,
+  sauce: INGREDIENT_SAUCE
+};
+
+// Загрузка ингредиентов и  ожидание завершения запроса
+Cypress.Commands.add('loadIngredients', () => {
+  cy.intercept('GET', '/api/ingredients', { fixture: 'ingredients' }).as(
+    'getIngredients'
+  );
+  cy.visit('/');
+  cy.wait('@getIngredients');
+});
+
+// Добавление ингредиента по его типу
+Cypress.Commands.add('addIngredient', (type: 'bun' | 'main' | 'sauce') => {
+  cy.get(ingredientsSelectors[type]).first().contains('Добавить').click();
+});
+
+// Открытие модалки ингредиента
+Cypress.Commands.add(
+  'openIngredientModal',
+  (type: 'bun' | 'main' | 'sauce') => {
+    cy.get(ingredientsSelectors[type]).first().click();
+    cy.get(MODAL).should('be.visible');
+  }
+);
+
+// Закрытие модалки по кнопке
+Cypress.Commands.add('closeModal', () => {
+  cy.get(MODAL_CLOSE_BUTTON).click();
+  cy.get(MODAL).should('not.exist');
+});
+
+// Закрытие модального окна по клику на оверлей
+Cypress.Commands.add('closeModalByOverlay', () => {
+  cy.get(MODAL_OVERLAY).click({ force: true });
+  cy.get(MODAL).should('not.exist');
+});
