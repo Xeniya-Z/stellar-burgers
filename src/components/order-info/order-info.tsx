@@ -5,8 +5,8 @@ import {
   fetchOrderByNumber,
   currentOrder,
   isLoadingOrderInfo
-} from '../../services/slices/orderSlice';
-import { selectIngredients } from '../../services/slices/ingredientsSlice';
+} from '../../services/slices/orderSlice/orderSlice';
+import { selectIngredients } from '../../services/slices/ingredientsSlice/ingredientsSlice';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';

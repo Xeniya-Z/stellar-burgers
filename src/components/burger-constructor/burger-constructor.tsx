@@ -6,15 +6,15 @@ import { isAuthenticated } from '../../services/slices/userSlice/userSlice';
 import {
   orderRequest as selectOrderRequest,
   currentOrder
-} from '../../services/slices/orderSlice';
+} from '../../services/slices/orderSlice/orderSlice';
 import {
   TIngredientWithId,
   clearConstructor
-} from '../../services/slices/burgerConstructorSlice';
+} from '../../services/slices/burgerConstructorSlice/burgerConstructorSlice';
 import {
   createOrder,
   clearCurrentOrder
-} from '../../services/slices/orderSlice';
+} from '../../services/slices/orderSlice/orderSlice';
 
 export const BurgerConstructor: FC = () => {
   const dispatch = useDispatch();
